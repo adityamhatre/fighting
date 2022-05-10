@@ -20,7 +20,7 @@ export class Fighter {
     position: XY;
     size: { width: number; height: number };
   };
-  public isPerformingAction = false;
+  public isAttacking = false;
   public health = 100;
   public action: "run" | "jump" | "idle" | "attack1" | "attack2" | "fall" =
     "idle";
@@ -133,6 +133,29 @@ export class Fighter {
   }
 
   private draw() {
+    if (this.velocity.x != 0) {
+      this.props.frames = 8;
+      this.action = "run";
+    }
+    if (this.velocity.y < 0) {
+      this.props.frames = 2;
+
+      this.action = "jump";
+    }
+    if (this.velocity.y > 0) {
+      this.props.frames = 2;
+
+      this.action = "fall";
+    }
+    if (this.velocity.x == 0 && this.velocity.y == 0) {
+      this.props.frames = 8;
+      this.action = "idle";
+    }
+    if (this.isAttacking) {
+      this.props.frames = 6;
+      this.action = "attack1";
+    }
+
     this.image.src = `../src/assets/${this.props.type}-${this.direction}/${this.action}.png`;
 
     if (this.framesElapsed++ % this.holdFrame == 0) {
@@ -172,61 +195,35 @@ export class Fighter {
   }
 
   public goRight() {
-    this.action = "run";
-    this.props.frames = 8;
-
     this.direction = "right";
-    this.velocity.x = 3;
+    this.velocity.x = 5;
   }
 
   public goLeft() {
-    this.action = "run";
-    this.props.frames = 8;
-
     this.direction = "left";
-    this.velocity.x = -3;
+    this.velocity.x = -5;
   }
 
   public jump() {
-    if (this.isPerformingAction) return;
-
-    this.isPerformingAction = true;
-    this.action = "jump";
-    this.props.frames = 2;
-
-    setTimeout(() => {
-      this.action = "fall";
-      this.props.frames = 2;
-    }, 300);
-
-    setTimeout(() => {
-      this.isPerformingAction = false;
-      this.action = "idle";
-      this.props.frames = 8;
-    }, 700);
-
     this.velocity.y = -20;
   }
 
   public stopHorizontal() {
-    if (this.isPerformingAction) return;
-
     this.action = "idle";
     this.props.frames = 8;
     this.velocity.x = 0;
   }
 
   public attack(other: Fighter) {
-    if (this.isPerformingAction) return;
-
-    this.action = Math.random() > 0.5 ? "attack1" : "attack2";
-    this.props.frames = 6;
-    this.isPerformingAction = true;
+    if (this.isAttacking) return;
+    this.currentFrame = 0;
+    this.framesElapsed = 1;
+    this.isAttacking = true;
     setTimeout(() => {
-      this.isPerformingAction = false;
+      this.isAttacking = false;
       this.action = "idle";
       this.props.frames = 8;
-    }, 300);
+    }, 500);
 
     if (!this.canAttack(other)) return;
     other.health -= 10;
