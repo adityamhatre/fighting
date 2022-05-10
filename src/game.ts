@@ -1,26 +1,44 @@
 import { Keys } from "./Keys.js";
 import { Main } from "./main.js";
 import { Fighter } from "./fighter.js";
+import { Sprite } from "./sprite.js";
 
 export class Game {
   private player: Fighter;
   private enemy: Fighter;
+  private bg: Sprite;
+  private shop: Sprite;
   private gameTimer = 150;
 
   constructor() {
     [this.player, this.enemy] = this.initPlayers();
+    this.bg = new Sprite({
+      position: { x: 0, y: 0 },
+      size: { x: Main.width, y: Main.height },
+      imgSrc: "../src/assets/background.png",
+      scale: 1,
+      frames: 1,
+    });
+    this.shop = new Sprite({
+      position: { x: Main.width - 425, y: Main.height - 430 },
+      size: { x: 100, y: 100 },
+      imgSrc: "../src/assets/shop.png",
+      scale: 2.5,
+      frames: 6,
+    });
     this.loop = this.loop.bind(this);
   }
 
   private initPlayers(): Fighter[] {
     const player = new Fighter({
+      debug: false,
       position: { x: 50, y: 100 },
       velocity: { x: 0, y: 0 },
       size: { x: 50, y: 150 },
       imgSrc: "../src/assets/player-right/idle.png",
       frames: 8,
       color: "red",
-      scale: 1,
+      scale: 2.25,
       direction: "right",
       type: "player",
       hitBoxOffset: {
@@ -30,12 +48,13 @@ export class Game {
     });
 
     const enemy = new Fighter({
+      debug: false,
       position: { x: 500, y: 100 },
       velocity: { x: 0, y: 0 },
       size: { x: 50, y: 150 },
       color: "blue",
       imgSrc: "../src/assets/enemy-left/idle.png",
-      scale: 1,
+      scale: 2.25,
       frames: 4,
       direction: "left",
       type: "enemy",
@@ -156,6 +175,9 @@ export class Game {
     Main.c.fillStyle = "black";
     Main.c.fillRect(0, 0, Main.canvas.width, Main.canvas.height);
     this.checkKeys();
+
+    this.bg.update();
+    this.shop.update();
     this.player.update();
     this.enemy.update();
 
@@ -183,9 +205,6 @@ export class Game {
         this.determineWinner(status);
       }
     }
-
-    Main.c.fillStyle = "green";
-    Main.c.fillRect(0, 700, Main.canvas.width, 1);
   }
 
   private determineWinner(status: HTMLElement) {

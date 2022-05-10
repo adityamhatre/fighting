@@ -1,9 +1,8 @@
 import { Game } from "./game.js";
 import { Main } from "./main.js";
-import { Fighter } from "./fighter.js";
 
-const width = 1024;
-const height = 768;
+const width = Main.width;
+const height = Main.height;
 const canvas = Main.canvas;
 const c = Main.c;
 

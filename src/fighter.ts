@@ -53,7 +53,6 @@ export class Fighter {
 
   constructor(props: FighterProps) {
     this.props = props;
-    this.props.scale = 2;
     this.position = props.position;
     this.velocity = props.velocity;
     this.color = props.color;
@@ -82,7 +81,7 @@ export class Fighter {
   }
 
   private drawAttackBox() {
-    // if (!this.isPerformingAction) return;
+    if (!this.props.debug) return;
     Main.c.strokeStyle = "green";
 
     Main.c.strokeRect(
@@ -94,6 +93,7 @@ export class Fighter {
   }
 
   private drawHitBox() {
+    if (!this.props.debug) return;
     Main.c.strokeStyle = "red";
     Main.c.strokeRect(
       this.hitBox.position.x,
@@ -131,14 +131,6 @@ export class Fighter {
   }
 
   private drawBody() {
-    Main.c.fillStyle = this.color;
-    Main.c.strokeRect(
-      this.position.x,
-      this.position.y,
-      this.width,
-      this.height
-    );
-
     Main.c.drawImage(
       this.image,
       this.currentFrame * (this.image.width / this.props.frames),
@@ -193,12 +185,12 @@ export class Fighter {
 
     const hitBoxBase =
       this.position.y + 65 * this.props.scale + this.hitBox.size.height;
-    this.isJumping = hitBoxBase < 700;
-    // Main.c.strokeStyle = "yellow";
-    // Main.c.strokeRect(0, hitBoxBase, 1000, 0);
-    if (hitBoxBase >= 700) {
+    this.isJumping = hitBoxBase < Main.ground;
+
+    if (hitBoxBase >= Main.ground) {
       this.velocity.y = 0;
-      this.position.y = 700 - 65 * this.props.scale - this.hitBox.size.height;
+      this.position.y =
+        Main.ground - 65 * this.props.scale - this.hitBox.size.height;
     }
 
     if (this.hitBox.position.x < 0) {

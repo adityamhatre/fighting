@@ -11,4 +11,5 @@ export interface FighterProps {
   direction: "left" | "right";
   type: "player" | "enemy";
   hitBoxOffset: { position: XY; size: { width: number; height: number } };
+  debug?: boolean;
 }
