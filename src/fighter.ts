@@ -49,6 +49,7 @@ export class Fighter {
   private framesElapsed = 0;
   private holdFrame = 5;
   private currentFrame = 0;
+  private attackType: 1 | 2 = 1;
 
   constructor(props: FighterProps) {
     this.props = props;
@@ -165,7 +166,7 @@ export class Fighter {
       this.action = "idle";
     }
     if (this.isAttacking) {
-      this.action = "attack1";
+      this.action = `attack${this.attackType}`;
     }
     if (this.isTakingHit) {
       this.action = "take hit";
@@ -231,27 +232,26 @@ export class Fighter {
 
   public async attack(other: Fighter): Promise<boolean> {
     if (this.isAttacking) return false;
+
+    this.attackType = Math.random() > 0.5 ? 1 : 2;
     this.currentFrame = 0;
     this.framesElapsed = 1;
     this.isAttacking = true;
 
     const attackPromise: Promise<boolean> = new Promise((resolve) => {
-      setTimeout(
-        () => {
-          this.isAttacking = false;
-          if (!this.canAttack(other)) {
-            resolve(false);
-            return;
-          }
+      setTimeout(() => {
+        this.isAttacking = false;
+        if (!this.canAttack(other)) {
+          resolve(false);
+          return;
+        }
 
-          other.health -= 10;
-          if (other.health <= 0) {
-            other.health = 0;
-          }
-          resolve(true);
-        },
-        1000 / Game.actionFrameCount[this.props.type]["attack1"]
-      );
+        other.health -= 10;
+        if (other.health <= 0) {
+          other.health = 0;
+        }
+        resolve(true);
+      }, 1000 / Game.actionFrameCount[this.props.type]["attack1"]);
     });
     return await attackPromise;
   }
