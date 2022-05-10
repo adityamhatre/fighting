@@ -48,7 +48,7 @@ export class Game {
   }
 
   private addEventListeners() {
-    addEventListener("keydown", (event: KeyboardEvent) => {
+    addEventListener("keydown", async (event: KeyboardEvent) => {
       const key = event.key;
       switch (key) {
         case "d":
@@ -64,7 +64,10 @@ export class Game {
           this.player.lastKey = "w";
           break;
         case " ":
-          this.player.attack(this.enemy);
+          const playerAttackSuccessful = await this.player.attack(this.enemy);
+          if (playerAttackSuccessful) {
+            this.enemy.takingHit = true;
+          }
           break;
         case "ArrowLeft":
           Keys.ArrowLeft.pressed = true;
@@ -80,7 +83,10 @@ export class Game {
           break;
         case "Enter":
         case "Return":
-          this.enemy.attack(this.player);
+          const enemyAttackSuccessful = await this.enemy.attack(this.player);
+          if (enemyAttackSuccessful) {
+            this.player.takingHit = true;
+          }
           break;
       }
     });
@@ -151,7 +157,7 @@ export class Game {
     Main.c.fillRect(0, 0, Main.canvas.width, Main.canvas.height);
     this.checkKeys();
     this.player.update();
-    // this.enemy.update();
+    this.enemy.update();
 
     this.updateInterface();
   }
@@ -212,4 +218,25 @@ export class Game {
     this.loop();
     this.startTimer();
   }
+
+  public static actionFrameCount = {
+    player: {
+      idle: 8,
+      fall: 2,
+      jump: 2,
+      attack1: 6,
+      attack2: 6,
+      run: 8,
+      "take hit": 4,
+    },
+    enemy: {
+      idle: 4,
+      fall: 2,
+      jump: 2,
+      attack1: 4,
+      attack2: 4,
+      run: 8,
+      "take hit": 3,
+    },
+  };
 }

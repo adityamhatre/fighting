@@ -1,4 +1,5 @@
 import { FighterProps } from "./fighter.props.js";
+import { Game } from "./game.js";
 import { Main } from "./main.js";
 import { XY } from "./position.js";
 
@@ -22,9 +23,26 @@ export class Fighter {
   };
   public isJumping = false;
   public isAttacking = false;
+  private isTakingHit = false;
+
+  public set takingHit(v: boolean) {
+    this.isTakingHit = v;
+    if (!v) return;
+    setTimeout(() => {
+      this.currentFrame = 0;
+      this.framesElapsed = 1;
+      this.isTakingHit = false;
+    }, 200);
+  }
   public health = 100;
-  public action: "run" | "jump" | "idle" | "attack1" | "attack2" | "fall" =
-    "idle";
+  public action:
+    | "run"
+    | "jump"
+    | "idle"
+    | "attack1"
+    | "attack2"
+    | "fall"
+    | "take hit" = "idle";
 
   private image = new Image();
   private props: FighterProps;
@@ -135,26 +153,25 @@ export class Fighter {
 
   private draw() {
     if (this.velocity.x != 0) {
-      this.props.frames = 8;
       this.action = "run";
     }
     if (this.velocity.y < 0) {
-      this.props.frames = 2;
       this.action = "jump";
     }
     if (this.velocity.y > 0) {
-      this.props.frames = 2;
       this.action = "fall";
     }
     if (this.velocity.x == 0 && this.velocity.y == 0) {
-      this.props.frames = 8;
       this.action = "idle";
     }
     if (this.isAttacking) {
-      this.props.frames = 6;
       this.action = "attack1";
     }
+    if (this.isTakingHit) {
+      this.action = "take hit";
+    }
 
+    this.props.frames = Game.actionFrameCount[this.props.type][this.action];
     this.image.src = `../src/assets/${this.props.type}-${this.direction}/${this.action}.png`;
 
     if (this.framesElapsed++ % this.holdFrame == 0) {
@@ -202,7 +219,7 @@ export class Fighter {
     this.velocity.x = -5;
   }
   public jump() {
-    if(this.isJumping) return
+    if (this.isJumping) return;
     this.velocity.y = -20;
   }
 
@@ -212,22 +229,31 @@ export class Fighter {
     this.velocity.x = 0;
   }
 
-  public attack(other: Fighter) {
-    if (this.isAttacking) return;
+  public async attack(other: Fighter): Promise<boolean> {
+    if (this.isAttacking) return false;
     this.currentFrame = 0;
     this.framesElapsed = 1;
     this.isAttacking = true;
-    setTimeout(() => {
-      this.isAttacking = false;
-      this.action = "idle";
-      this.props.frames = 8;
-    }, 500);
 
-    if (!this.canAttack(other)) return;
-    other.health -= 10;
-    if (other.health <= 0) {
-      other.health = 0;
-    }
+    const attackPromise: Promise<boolean> = new Promise((resolve) => {
+      setTimeout(
+        () => {
+          this.isAttacking = false;
+          if (!this.canAttack(other)) {
+            resolve(false);
+            return;
+          }
+
+          other.health -= 10;
+          if (other.health <= 0) {
+            other.health = 0;
+          }
+          resolve(true);
+        },
+        this.props.type === "enemy" ? 100 : 500
+      );
+    });
+    return await attackPromise;
   }
 
   private canAttack(other: Fighter): boolean {
