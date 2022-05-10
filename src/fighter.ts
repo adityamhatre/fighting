@@ -250,7 +250,7 @@ export class Fighter {
           }
           resolve(true);
         },
-        this.props.type === "enemy" ? 100 : 500
+        1000 / Game.actionFrameCount[this.props.type]["attack1"]
       );
     });
     return await attackPromise;
