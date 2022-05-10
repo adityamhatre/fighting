@@ -1,6 +1,6 @@
 import { FighterProps } from "./fighter.props.js";
 import { Game } from "./game.js";
-import { Main } from "./main.js";
+import { Constants } from "./constants.js";
 import { XY } from "./position.js";
 
 export class Fighter {
@@ -82,9 +82,9 @@ export class Fighter {
 
   private drawAttackBox() {
     if (!this.props.debug) return;
-    Main.c.strokeStyle = "green";
+    Constants.c.strokeStyle = "green";
 
-    Main.c.strokeRect(
+    Constants.c.strokeRect(
       this.attackBox.position.x,
       this.attackBox.position.y,
       this.attackBox.size.width,
@@ -94,8 +94,8 @@ export class Fighter {
 
   private drawHitBox() {
     if (!this.props.debug) return;
-    Main.c.strokeStyle = "red";
-    Main.c.strokeRect(
+    Constants.c.strokeStyle = "red";
+    Constants.c.strokeRect(
       this.hitBox.position.x,
       this.hitBox.position.y,
       this.hitBox.size.width,
@@ -131,7 +131,7 @@ export class Fighter {
   }
 
   private drawBody() {
-    Main.c.drawImage(
+    Constants.c.drawImage(
       this.image,
       this.currentFrame * (this.image.width / this.props.frames),
       0,
@@ -185,19 +185,19 @@ export class Fighter {
 
     const hitBoxBase =
       this.position.y + 65 * this.props.scale + this.hitBox.size.height;
-    this.isJumping = hitBoxBase < Main.ground;
+    this.isJumping = hitBoxBase < Constants.ground;
 
-    if (hitBoxBase >= Main.ground) {
+    if (hitBoxBase >= Constants.ground) {
       this.velocity.y = 0;
       this.position.y =
-        Main.ground - 65 * this.props.scale - this.hitBox.size.height;
+        Constants.ground - 65 * this.props.scale - this.hitBox.size.height;
     }
 
     if (this.hitBox.position.x < 0) {
       this.position.x = -80 * this.props.scale;
     }
-    if (this.hitBox.position.x + this.hitBox.size.width > Main.canvas.width) {
-      this.position.x = Main.canvas.width - 115 * this.props.scale;
+    if (this.hitBox.position.x + this.hitBox.size.width > Constants.canvas.width) {
+      this.position.x = Constants.canvas.width - 115 * this.props.scale;
     }
     this.draw();
   }

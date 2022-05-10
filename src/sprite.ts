@@ -1,4 +1,4 @@
-import { Main } from "./main.js";
+import { Constants } from "./constants.js";
 import { XY } from "./position.js";
 import { SpriteProps } from "./sprite.props.js";
 
@@ -24,7 +24,7 @@ export class Sprite {
       this.framesElapsed = 1;
     }
 
-    Main.c.drawImage(
+    Constants.c.drawImage(
       this.image,
       this.currentFrame * (this.image.width / this.props.frames),
       0,

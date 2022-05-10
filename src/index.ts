@@ -1,10 +1,10 @@
 import { Game } from "./game.js";
-import { Main } from "./main.js";
+import { Constants } from "./constants.js";
 
-const width = Main.width;
-const height = Main.height;
-const canvas = Main.canvas;
-const c = Main.c;
+const width = Constants.width;
+const height = Constants.height;
+const canvas = Constants.canvas;
+const c = Constants.c;
 
 canvas.width = width;
 canvas.height = height;

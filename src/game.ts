@@ -1,5 +1,5 @@
 import { Keys } from "./Keys.js";
-import { Main } from "./main.js";
+import { Constants } from "./constants.js";
 import { Fighter } from "./fighter.js";
 import { Sprite } from "./sprite.js";
 
@@ -14,13 +14,13 @@ export class Game {
     [this.player, this.enemy] = this.initPlayers();
     this.bg = new Sprite({
       position: { x: 0, y: 0 },
-      size: { x: Main.width, y: Main.height },
+      size: { x: Constants.width, y: Constants.height },
       imgSrc: "../src/assets/background.png",
       scale: 1,
       frames: 1,
     });
     this.shop = new Sprite({
-      position: { x: Main.width - 425, y: Main.height - 430 },
+      position: { x: Constants.width - 425, y: Constants.height - 430 },
       size: { x: 100, y: 100 },
       imgSrc: "../src/assets/shop.png",
       scale: 2.5,
@@ -172,8 +172,8 @@ export class Game {
 
   private loop() {
     requestAnimationFrame(this.loop);
-    Main.c.fillStyle = "black";
-    Main.c.fillRect(0, 0, Main.canvas.width, Main.canvas.height);
+    Constants.c.fillStyle = "black";
+    Constants.c.fillRect(0, 0, Constants.canvas.width, Constants.canvas.height);
     this.checkKeys();
 
     this.bg.update();
