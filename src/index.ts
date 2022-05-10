@@ -1,6 +1,6 @@
 import { Game } from "./game.js";
 import { Main } from "./main.js";
-import { Sprite } from "./sprite.js";
+import { Fighter } from "./fighter.js";
 
 const width = 1024;
 const height = 768;

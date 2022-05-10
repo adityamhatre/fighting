@@ -1,30 +1,48 @@
 import { Keys } from "./Keys.js";
 import { Main } from "./main.js";
-import { Sprite } from "./sprite.js";
+import { Fighter } from "./fighter.js";
 
 export class Game {
-  private player: Sprite;
-  private enemy: Sprite;
-  private gameTimer = 15;
+  private player: Fighter;
+  private enemy: Fighter;
+  private gameTimer = 150;
 
   constructor() {
     [this.player, this.enemy] = this.initPlayers();
     this.loop = this.loop.bind(this);
   }
 
-  private initPlayers(): Sprite[] {
-    const player = new Sprite({
+  private initPlayers(): Fighter[] {
+    const player = new Fighter({
       position: { x: 50, y: 100 },
       velocity: { x: 0, y: 0 },
       size: { x: 50, y: 150 },
+      imgSrc: "../src/assets/player-right/idle.png",
+      frames: 8,
       color: "red",
+      scale: 1,
+      direction: "right",
+      type: "player",
+      hitBoxOffset: {
+        size: { width: 35, height: 60 },
+        position: { x: 0, y: 0 },
+      },
     });
 
-    const enemy = new Sprite({
-      position: { x: 900, y: 100 },
+    const enemy = new Fighter({
+      position: { x: 500, y: 100 },
       velocity: { x: 0, y: 0 },
       size: { x: 50, y: 150 },
       color: "blue",
+      imgSrc: "../src/assets/enemy-left/idle.png",
+      scale: 1,
+      frames: 4,
+      direction: "left",
+      type: "enemy",
+      hitBoxOffset: {
+        size: { width: 35, height: 65 },
+        position: { x: 0, y: 0 },
+      },
     });
     return [player, enemy];
   }
@@ -133,7 +151,7 @@ export class Game {
     Main.c.fillRect(0, 0, Main.canvas.width, Main.canvas.height);
     this.checkKeys();
     this.player.update();
-    this.enemy.update();
+    // this.enemy.update();
 
     this.updateInterface();
   }
@@ -159,6 +177,9 @@ export class Game {
         this.determineWinner(status);
       }
     }
+
+    Main.c.fillStyle = "green";
+    Main.c.fillRect(0, 700, Main.canvas.width, 1);
   }
 
   private determineWinner(status: HTMLElement) {
