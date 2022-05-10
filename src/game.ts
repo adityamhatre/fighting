@@ -1,6 +1,6 @@
-import { Keys } from "./Keys.js";
 import { Constants } from "./constants.js";
 import { Fighter } from "./fighter.js";
+import { Keys } from "./Keys.js";
 import { Sprite } from "./sprite.js";
 
 export class Game {
@@ -37,7 +37,6 @@ export class Game {
       size: { x: 50, y: 150 },
       imgSrc: "../src/assets/player-right/idle.png",
       frames: 8,
-      color: "red",
       scale: 2.25,
       direction: "right",
       type: "player",
@@ -52,7 +51,6 @@ export class Game {
       position: { x: 500, y: 100 },
       velocity: { x: 0, y: 0 },
       size: { x: 50, y: 150 },
-      color: "blue",
       imgSrc: "../src/assets/enemy-left/idle.png",
       scale: 2.25,
       frames: 4,
@@ -238,24 +236,4 @@ export class Game {
     this.startTimer();
   }
 
-  public static actionFrameCount = {
-    player: {
-      idle: 8,
-      fall: 2,
-      jump: 2,
-      attack1: 6,
-      attack2: 6,
-      run: 8,
-      "take hit": 4,
-    },
-    enemy: {
-      idle: 4,
-      fall: 2,
-      jump: 2,
-      attack1: 4,
-      attack2: 4,
-      run: 8,
-      "take hit": 3,
-    },
-  };
 }

@@ -1,7 +1,34 @@
 export class Constants {
-  static canvas = document.getElementById("canvas") as HTMLCanvasElement;
-  static c = Constants.canvas.getContext("2d") as CanvasRenderingContext2D;
-  static width = 1366;
-  static height = 768;
-  static ground = 660;
+  static readonly canvas = document.getElementById(
+    "canvas"
+  ) as HTMLCanvasElement;
+  static readonly c = Constants.canvas.getContext(
+    "2d"
+  ) as CanvasRenderingContext2D;
+
+  static readonly width = 1366;
+  static readonly height = 768;
+
+  static readonly ground = 660;
+
+  static readonly actionFrameCount = {
+    player: {
+      idle: 8,
+      fall: 2,
+      jump: 2,
+      attack1: 6,
+      attack2: 6,
+      run: 8,
+      "take hit": 4,
+    },
+    enemy: {
+      idle: 4,
+      fall: 2,
+      jump: 2,
+      attack1: 4,
+      attack2: 4,
+      run: 8,
+      "take hit": 3,
+    },
+  };
 }

@@ -9,6 +9,7 @@ export class Sprite {
   private framesElapsed = 0;
   private holdFrame = 5;
   private currentFrame = 0;
+  
   constructor(props: SpriteProps) {
     this.props = props;
     this.position = props.position;
@@ -35,7 +36,6 @@ export class Sprite {
       (this.props.scale * this.image.width) / this.props.frames,
       this.props.scale * this.image.height
     );
-
   }
 
   public update() {

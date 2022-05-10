@@ -1,5 +1,5 @@
-import { Game } from "./game.js";
 import { Constants } from "./constants.js";
+import { Game } from "./game.js";
 
 const width = Constants.width;
 const height = Constants.height;

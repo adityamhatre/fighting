@@ -1,41 +1,18 @@
+import { Constants } from "./constants.js";
 import { FighterProps } from "./fighter.props.js";
 import { Game } from "./game.js";
-import { Constants } from "./constants.js";
 import { XY } from "./position.js";
 
 export class Fighter {
+  public lastKey: string = "";
+
   private velocity: XY;
   private gravity: number = 1;
-  private color: string;
-
-  public direction: "left" | "right" = "right";
-  public lastKey: string = "";
-  public width: number;
-  public height: number;
-  public position: XY;
-  public attackBox: {
-    position: XY;
-    size: { width: number; height: number };
-  };
-  public hitBox: {
-    position: XY;
-    size: { width: number; height: number };
-  };
-  public isJumping = false;
-  public isAttacking = false;
-  private isTakingHit = false;
-
-  public set takingHit(v: boolean) {
-    this.isTakingHit = v;
-    if (!v) return;
-    setTimeout(() => {
-      this.currentFrame = 0;
-      this.framesElapsed = 1;
-      this.isTakingHit = false;
-    }, 200);
-  }
-  public health = 100;
-  public action:
+  private direction: "left" | "right" = "right";
+  private width: number;
+  private height: number;
+  private position: XY;
+  private action:
     | "run"
     | "jump"
     | "idle"
@@ -51,11 +28,33 @@ export class Fighter {
   private currentFrame = 0;
   private attackType: 1 | 2 = 1;
 
+  private attackBox: {
+    position: XY;
+    size: { width: number; height: number };
+  };
+  private hitBox: {
+    position: XY;
+    size: { width: number; height: number };
+  };
+  private isJumping = false;
+  private isAttacking = false;
+  private isTakingHit = false;
+
+  public set takingHit(v: boolean) {
+    this.isTakingHit = v;
+    if (!v) return;
+    setTimeout(() => {
+      this.currentFrame = 0;
+      this.framesElapsed = 1;
+      this.isTakingHit = false;
+    }, 200);
+  }
+  public health = 100;
+
   constructor(props: FighterProps) {
     this.props = props;
     this.position = props.position;
     this.velocity = props.velocity;
-    this.color = props.color;
 
     this.height = props.size.y;
     this.width = props.size.x;
@@ -164,7 +163,8 @@ export class Fighter {
       this.action = "take hit";
     }
 
-    this.props.frames = Game.actionFrameCount[this.props.type][this.action];
+    this.props.frames =
+      Constants.actionFrameCount[this.props.type][this.action];
     this.image.src = `../src/assets/${this.props.type}-${this.direction}/${this.action}.png`;
 
     if (this.framesElapsed++ % this.holdFrame == 0) {
@@ -196,7 +196,10 @@ export class Fighter {
     if (this.hitBox.position.x < 0) {
       this.position.x = -80 * this.props.scale;
     }
-    if (this.hitBox.position.x + this.hitBox.size.width > Constants.canvas.width) {
+    if (
+      this.hitBox.position.x + this.hitBox.size.width >
+      Constants.canvas.width
+    ) {
       this.position.x = Constants.canvas.width - 115 * this.props.scale;
     }
     this.draw();
@@ -243,7 +246,7 @@ export class Fighter {
           other.health = 0;
         }
         resolve(true);
-      }, 1000 / Game.actionFrameCount[this.props.type]["attack1"]);
+      }, 1000 / Constants.actionFrameCount[this.props.type]["attack1"]);
     });
     return await attackPromise;
   }

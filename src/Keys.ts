@@ -8,7 +8,7 @@ export const Keys = {
   w: {
     pressed: false,
   },
-  ' ': {
+  " ": {
     pressed: false,
   },
   ArrowLeft: {

@@ -3,7 +3,6 @@ import { XY } from "./position.js";
 export interface FighterProps {
   position: XY;
   velocity: XY;
-  color: string;
   size: XY;
   imgSrc: string;
   frames: number;
