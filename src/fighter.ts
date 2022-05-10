@@ -20,6 +20,7 @@ export class Fighter {
     position: XY;
     size: { width: number; height: number };
   };
+  public isJumping = false;
   public isAttacking = false;
   public health = 100;
   public action: "run" | "jump" | "idle" | "attack1" | "attack2" | "fall" =
@@ -93,8 +94,8 @@ export class Fighter {
     this.hitBox.position.y = this.position.y + 65 * this.props.scale;
 
     this.drawBody();
-    // this.drawAttackBox();
-    // this.drawHitBox();
+    this.drawAttackBox();
+    this.drawHitBox();
   }
 
   private drawRight() {
@@ -139,12 +140,10 @@ export class Fighter {
     }
     if (this.velocity.y < 0) {
       this.props.frames = 2;
-
       this.action = "jump";
     }
     if (this.velocity.y > 0) {
       this.props.frames = 2;
-
       this.action = "fall";
     }
     if (this.velocity.x == 0 && this.velocity.y == 0) {
@@ -173,10 +172,10 @@ export class Fighter {
     this.position.y += this.velocity.y;
 
     this.velocity.y += this.gravity;
-    // here
+
     const hitBoxBase =
       this.position.y + 65 * this.props.scale + this.hitBox.size.height;
-
+    this.isJumping = hitBoxBase < 700;
     // Main.c.strokeStyle = "yellow";
     // Main.c.strokeRect(0, hitBoxBase, 1000, 0);
     if (hitBoxBase >= 700) {
@@ -190,7 +189,6 @@ export class Fighter {
     if (this.hitBox.position.x + this.hitBox.size.width > Main.canvas.width) {
       this.position.x = Main.canvas.width - 115 * this.props.scale;
     }
-
     this.draw();
   }
 
@@ -203,8 +201,8 @@ export class Fighter {
     this.direction = "left";
     this.velocity.x = -5;
   }
-
   public jump() {
+    if(this.isJumping) return
     this.velocity.y = -20;
   }
 
