@@ -65,7 +65,7 @@ export class Fighter {
     this.direction = this.props.type === "player" ? "right" : "left";
     this.attackBox = {
       position: { ...this.position },
-      size: { width: 75 * this.props.scale, height: 25 * this.props.scale },
+      size: { width: 75 * this.props.scale, height: 25 * this.props.scale }, // attack box size (values are in pixels)
     };
     this.hitBox = {
       position: { ...this.position },
@@ -84,8 +84,8 @@ export class Fighter {
 
   private drawAttackBox() {
     if (!this.props.debug) return;
-    Constants.c.strokeStyle = "green";
 
+    Constants.c.strokeStyle = "green";
     Constants.c.strokeRect(
       this.attackBox.position.x,
       this.attackBox.position.y,
@@ -96,6 +96,7 @@ export class Fighter {
 
   private drawHitBox() {
     if (!this.props.debug) return;
+
     Constants.c.strokeStyle = "red";
     Constants.c.strokeRect(
       this.hitBox.position.x,
@@ -105,31 +106,25 @@ export class Fighter {
     );
   }
 
-  private drawLeft() {
-    this.attackBox.position.x =
-      this.position.x + (this.width / 2 - this.attackBox.size.width);
+  private computeAttackBoxPosition() {
+    this.attackBox.position.x = this.position.x + this.width / 2;
+    
+    if (this.direction === "left") {
+      this.attackBox.position.x -= this.attackBox.size.width;
+    }
+
     this.attackBox.position.y = this.position.y + 80 * this.props.scale;
-
-    this.hitBox.position.x =
-      this.position.x + this.width / 2 - 20 * this.props.scale;
-    this.hitBox.position.y = this.position.y + 65 * this.props.scale;
-
-    this.drawBody();
-    this.drawAttackBox();
-    this.drawHitBox();
   }
 
-  private drawRight() {
-    this.attackBox.position.x = this.position.x + this.width / 2;
-    this.attackBox.position.y = this.position.y + 80 * this.props.scale;
-
+  private computeHitBoxPosition() {
     this.hitBox.position.x =
       this.position.x + this.width / 2 - 20 * this.props.scale;
     this.hitBox.position.y = this.position.y + 65 * this.props.scale;
+  }
 
-    this.drawBody();
-    this.drawAttackBox();
-    this.drawHitBox();
+  private computeBoxesPosition() {
+    this.computeAttackBoxPosition();
+    this.computeHitBoxPosition();
   }
 
   private drawBody() {
@@ -194,8 +189,10 @@ export class Fighter {
 
     this.image.src = `../src/assets/${this.props.type}-${this.direction}/${this.action}.png`;
 
-    if (this.direction === "right") return this.drawRight();
-    if (this.direction === "left") return this.drawLeft();
+    this.computeBoxesPosition();
+    this.drawBody();
+    this.drawAttackBox();
+    this.drawHitBox();
   }
 
   public update() {
