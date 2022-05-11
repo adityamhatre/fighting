@@ -262,7 +262,7 @@ export class Fighter {
           return;
         }
 
-        other.health -= 10;
+        other.health -= Math.ceil(Math.random() * 5);
         if (other.health <= 0) {
           other.health = 0;
         }
