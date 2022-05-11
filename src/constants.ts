@@ -19,7 +19,8 @@ export class Constants {
       attack1: 6,
       attack2: 6,
       run: 8,
-      "take hit": 4,
+      takeHit: 4,
+      death: 6,
     },
     enemy: {
       idle: 4,
@@ -28,7 +29,8 @@ export class Constants {
       attack1: 4,
       attack2: 4,
       run: 8,
-      "take hit": 3,
+      takeHit: 3,
+      death: 7,
     },
   };
 }

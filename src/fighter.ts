@@ -19,7 +19,8 @@ export class Fighter {
     | "attack1"
     | "attack2"
     | "fall"
-    | "take hit" = "idle";
+    | "takeHit"
+    | "death" = "idle";
 
   private image = new Image();
   private props: FighterProps;
@@ -39,6 +40,8 @@ export class Fighter {
   private isJumping = false;
   private isAttacking = false;
   private isTakingHit = false;
+  private isDying = false;
+  private isDead = false;
 
   public set takingHit(v: boolean) {
     this.isTakingHit = v;
@@ -143,7 +146,7 @@ export class Fighter {
     );
   }
 
-  private draw() {
+  private determineAction() {
     if (this.velocity.x != 0) {
       this.action = "run";
     }
@@ -160,19 +163,37 @@ export class Fighter {
       this.action = `attack${this.attackType}`;
     }
     if (this.isTakingHit) {
-      this.action = "take hit";
+      this.action = "takeHit";
+    }
+    if (this.health === 0) {
+      this.action = "death";
     }
 
     this.props.frames =
       Constants.actionFrameCount[this.props.type][this.action];
-    this.image.src = `../src/assets/${this.props.type}-${this.direction}/${this.action}.png`;
+  }
+
+  private draw() {
+    this.determineAction();
 
     if (this.framesElapsed++ % this.holdFrame == 0) {
       if (++this.currentFrame >= this.props.frames) {
         this.currentFrame = 0;
+
+        if (this.isDying) {
+          this.isDead = true;
+        }
       }
       this.framesElapsed = 1;
     }
+
+    if (this.isDead) {
+      this.currentFrame =
+        Constants.actionFrameCount[this.props.type]["death"] - 1;
+    }
+
+    this.image.src = `../src/assets/${this.props.type}-${this.direction}/${this.action}.png`;
+
     if (this.direction === "right") return this.drawRight();
     if (this.direction === "left") return this.drawLeft();
   }
@@ -246,7 +267,7 @@ export class Fighter {
           other.health = 0;
         }
         resolve(true);
-      }, 1000 / Constants.actionFrameCount[this.props.type]["attack1"]);
+      }, 1000 / Constants.actionFrameCount[this.props.type][`attack${this.attackType}`]);
     });
     return await attackPromise;
   }
@@ -278,5 +299,15 @@ export class Fighter {
       );
     }
     return false;
+  }
+
+  public gotAttacked() {
+    this.takingHit = true;
+    if (this.health === 0) {
+      this.action = "death";
+      this.currentFrame = 0;
+      this.framesElapsed = 1;
+      this.isDying = true;
+    }
   }
 }

@@ -83,7 +83,7 @@ export class Game {
         case " ":
           const playerAttackSuccessful = await this.player.attack(this.enemy);
           if (playerAttackSuccessful) {
-            this.enemy.takingHit = true;
+            this.enemy.gotAttacked();
           }
           break;
         case "ArrowLeft":
@@ -102,7 +102,7 @@ export class Game {
         case "Return":
           const enemyAttackSuccessful = await this.enemy.attack(this.player);
           if (enemyAttackSuccessful) {
-            this.player.takingHit = true;
+            this.player.gotAttacked();
           }
           break;
       }
@@ -235,5 +235,4 @@ export class Game {
     this.loop();
     this.startTimer();
   }
-
 }
