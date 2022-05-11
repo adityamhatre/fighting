@@ -1,4 +1,4 @@
-# Name TBD (Fighting game)
+# Street Fight
 
 **Requires tsc**
 
