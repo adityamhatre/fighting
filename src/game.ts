@@ -1,6 +1,7 @@
 import { Constants } from "./constants.js";
 import { Fighter } from "./fighter.js";
 import { Keys } from "./Keys.js";
+import { Sounds } from "./Sounds.js";
 import { Sprite } from "./sprite.js";
 
 export class Game {
@@ -8,21 +9,20 @@ export class Game {
   private enemy: Fighter;
   private bg: Sprite;
   private shop: Sprite;
-  private gameTimer = 150;
 
   constructor() {
     [this.player, this.enemy] = this.initPlayers();
     this.bg = new Sprite({
       position: { x: 0, y: 0 },
       size: { x: Constants.width, y: Constants.height },
-      imgSrc: "../src/assets/background.png",
+      imgSrc: "../src/assets/images/background.png",
       scale: 1,
       frames: 1,
     });
     this.shop = new Sprite({
       position: { x: Constants.width - 425, y: Constants.height - 430 },
       size: { x: 100, y: 100 },
-      imgSrc: "../src/assets/shop.png",
+      imgSrc: "../src/assets/images/shop.png",
       scale: 2.5,
       frames: 6,
     });
@@ -35,7 +35,7 @@ export class Game {
       position: { x: 50, y: 100 },
       velocity: { x: 0, y: 0 },
       size: { x: 50, y: 150 },
-      imgSrc: "../src/assets/player-right/idle.png",
+      imgSrc: "../src/assets/images/player-right/idle.png",
       frames: 8,
       scale: 2.25,
       direction: "right",
@@ -51,7 +51,7 @@ export class Game {
       position: { x: 500, y: 100 },
       velocity: { x: 0, y: 0 },
       size: { x: 50, y: 150 },
-      imgSrc: "../src/assets/enemy-left/idle.png",
+      imgSrc: "../src/assets/images/enemy-left/idle.png",
       scale: 2.25,
       frames: 4,
       direction: "left",
@@ -106,6 +106,8 @@ export class Game {
           }
           break;
       }
+
+      Sounds.play("bg"); //will only play if the sound is not already playing
     });
 
     addEventListener("keyup", (event: KeyboardEvent) => {
@@ -138,7 +140,7 @@ export class Game {
     if (
       this.player.health === 0 ||
       this.enemy.health === 0 ||
-      this.gameTimer === 0
+      Constants.gameTimer === 0
     )
       return;
     if (this.player.lastKey === "a" && Keys.a.pressed) {
@@ -179,6 +181,10 @@ export class Game {
     this.player.update();
     this.enemy.update();
 
+    if (this.player.health === 0 || this.enemy.health === 0) {
+      this.player.stop();
+      this.enemy.stop();
+    }
     this.updateInterface();
   }
 
@@ -195,8 +201,8 @@ export class Game {
 
     const status = document.getElementById("timer");
     if (status) {
-      status.innerHTML = `${this.twoDigits(this.gameTimer)}`;
-      if (this.gameTimer === 0) {
+      status.innerHTML = `${this.twoDigits(Constants.gameTimer)}`;
+      if (Constants.gameTimer === 0) {
         this.determineWinner(status);
       }
       if (this.player.health === 0 || this.enemy.health === 0) {
@@ -223,8 +229,8 @@ export class Game {
 
   private startTimer() {
     const interval = setInterval(() => {
-      this.gameTimer--;
-      if (this.gameTimer === 0) {
+      Constants.gameTimer--;
+      if (Constants.gameTimer === 0) {
         clearInterval(interval);
       }
     }, 1000);

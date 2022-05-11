@@ -2,6 +2,7 @@ import { Constants } from "./constants.js";
 import { FighterProps } from "./fighter.props.js";
 import { Game } from "./game.js";
 import { XY } from "./position.js";
+import { Sounds } from "./Sounds.js";
 
 export class Fighter {
   public lastKey: string = "";
@@ -108,7 +109,7 @@ export class Fighter {
 
   private computeAttackBoxPosition() {
     this.attackBox.position.x = this.position.x + this.width / 2;
-    
+
     if (this.direction === "left") {
       this.attackBox.position.x -= this.attackBox.size.width;
     }
@@ -187,7 +188,7 @@ export class Fighter {
         Constants.actionFrameCount[this.props.type]["death"] - 1;
     }
 
-    this.image.src = `../src/assets/${this.props.type}-${this.direction}/${this.action}.png`;
+    this.image.src = `../src/assets/images/${this.props.type}-${this.direction}/${this.action}.png`;
 
     this.computeBoxesPosition();
     this.drawBody();
@@ -242,9 +243,16 @@ export class Fighter {
     this.props.frames = 8;
     this.velocity.x = 0;
   }
+  public stop() {
+    this.action = "idle";
+    this.props.frames = 8;
+    this.velocity.x = 0;
+    this.velocity.y = 0;
+  }
 
   public async attack(other: Fighter): Promise<boolean> {
     if (this.isAttacking) return false;
+    Sounds.play("attack");
 
     this.attackType = Math.random() > 0.5 ? 1 : 2;
     this.currentFrame = 3; //  No idea why `3` works !!!, but oh well
@@ -302,9 +310,10 @@ export class Fighter {
     this.takingHit = true;
     if (this.health === 0) {
       this.action = "death";
-      this.currentFrame = 0;
-      this.framesElapsed = 1;
       this.isDying = true;
+      this.velocity.x = 0;
+      this.velocity.y = 0;
     }
+    Sounds.play("gotHit");
   }
 }

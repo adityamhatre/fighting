@@ -10,7 +10,6 @@ export class Constants {
   static readonly height = 768;
 
   static readonly ground = 660;
-
   static readonly actionFrameCount = {
     player: {
       idle: 8,
@@ -33,4 +32,6 @@ export class Constants {
       death: 7,
     },
   };
+
+  static gameTimer = 150;
 }
