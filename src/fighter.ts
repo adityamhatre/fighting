@@ -250,8 +250,8 @@ export class Fighter {
     if (this.isAttacking) return false;
 
     this.attackType = Math.random() > 0.5 ? 1 : 2;
-    this.currentFrame = 0;
-    this.framesElapsed = 1;
+    this.currentFrame = 3; //  No idea why `3` works !!!, but oh well
+    this.framesElapsed = 3; // Future me, I spent 15mins trying to fix this. Proceed at your own risk lol
     this.isAttacking = true;
 
     const attackPromise: Promise<boolean> = new Promise((resolve) => {
